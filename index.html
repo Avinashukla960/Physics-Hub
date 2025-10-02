@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Hub Juet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="btif4dxg8rgtfprtffrn.webp" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617; /* Slate 950 */
+            color: #cbd5e1; /* Slate 300 */
+        }
+        .hero-bg {
+            background-image: linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.7)), url('1555907787phpd7leW7.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .card-bg {
+            background-color: #0f172a; /* Slate 900 */
+            border: 1px solid #1e293b; /* Slate 800 */
+        }
+        .card-bg:hover {
+            border-color: #38bdf8; /* Sky 400 */
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background-color: #0ea5e9; /* Sky 500 */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #0284c7; /* Sky 600 */
+        }
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            background: #38bdf8;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        /* Simulation Modal Styles */
+        #simulation-modal.hidden {
+            display: none;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(2, 6, 23, 0.8); /* Slate 950 with opacity */
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal-container {
+            background-color: #0f172a; /* Slate 900 */
+            border: 1px solid #1e293b; /* Slate 800 */
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 95%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        #projectile-canvas {
+            background-color: #020617; /* Slate 950 */
+            border-radius: 0.5rem;
+        }
+        /* Custom slider styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #1e293b; /* Slate 800 */
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #0ea5e9;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #0ea5e9;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="header" class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2">
+                 <img src="btif4dxg8rgtfprtffrn.webp"  fill="none" width="50" stroke="currentColor" alt="">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0-2.25l2.25 1.313M4.5 9l7.5 4.375 7.5-4.375M4.5 9v6.125c0 .621.504 1.125 1.125 1.125h10.5c.621 0 1.125-.504 1.125-1.125V9" />
+                </svg>
+                <span class="text-xl font-bold text-slate-100">Physics Hub Juet</span>
+            </a>
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="text-slate-300 hover:text-sky-400 transition duration-300">Home</a>
+                <a href="#simulations" class="text-slate-300 hover:text-sky-400 transition duration-300">Simulations</a>
+                <a href="#about" class="text-slate-300 hover:text-sky-400 transition duration-300">About</a>
+                <a href="#contact" class="bg-slate-800 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-700 transition duration-300">Contact</a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#home" class="block py-2 text-slate-300 hover:text-sky-400">Home</a>
+            <a href="#simulations" class="block py-2 text-slate-300 hover:text-sky-400">Simulations</a>
+            <a href="#about" class="block py-2 text-slate-300 hover:text-sky-400">About</a>
+            <a href="#contact" class="block py-2 text-slate-300 hover:text-sky-400">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-bg min-h-screen flex items-center">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-slate-100 leading-tight mb-4">
+                    Interactive Physics,
+                    <span class="block bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-cyan-400">At Your Fingertips.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-8">
+                    Dive into the world of physics with our collection of interactive simulations. Visualize complex concepts, conduct virtual experiments, and deepen your understanding of the universe.
+                </p>
+                <a href="#simulations" class="btn-primary font-bold text-lg px-8 py-4 rounded-lg transition-transform duration-300 inline-block transform hover:scale-105">
+                    Explore Simulations
+                </a>
+            </div>
+        </section>
+
+
+        <!-- Featured Simulations Section -->
+        <section id="simulations" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title text-3xl md:text-4xl font-bold text-slate-100">Featured Simulations</h2>
+                    <p class="text-slate-400 mt-4 max-w-2xl mx-auto">Get started with some of our most popular and engaging physics simulations.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Card 1: Projectile Motion -->
+                    <div class="card-bg rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="p-3 bg-slate-800 rounded-lg">
+                                    <svg class="w-6 h-6 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-100">Projectile Motion</h3>
+                            </div>
+                            <p class="text-slate-400 mb-6">Launch objects with varying angles and initial velocities. Analyze their trajectory, range, and maximum height in a customizable environment.</p>
+                            <button id="launch-projectile-sim" class="font-semibold text-sky-400 hover:text-sky-500 transition duration-300 inline-flex items-center">
+                                Launch Simulation
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Wave Interference -->
+                    <div class="card-bg rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out">
+                        <div class="p-6">
+                           <div class="flex items-center space-x-4 mb-4">
+                                <div class="p-3 bg-slate-800 rounded-lg">
+                                    <svg class="w-6 h-6 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v4.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 9.553z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-100">Interactive Light Diffraction</h3>
+                            </div>
+                            <p class="text-slate-400 mb-6">Explore the fascinating world of wave optics. Adjust the physical parameters and instantly see how light behaves as it passes through a double slit.</p>
+                             <a href="Differaction.html" class="font-semibold text-sky-400 hover:text-sky-500 transition duration-300 inline-flex items-center">
+                                Launch Simulation
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Card 3: Gravity and Orbits -->
+                    <div class="card-bg rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="p-3 bg-slate-800 rounded-lg">
+                                    <svg class="w-6 h-6 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-100">Gravity & Orbits</h3>
+                            </div>
+                            <p class="text-slate-400 mb-6">Explore the laws of universal gravitation. Place planets, moons, and stars in space and see how their gravitational forces create stable (or unstable!) orbits.</p>
+                             <a href="#" class="font-semibold text-sky-400 hover:text-sky-500 transition duration-300 inline-flex items-center">
+                                Launch Simulation
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 bg-slate-900">
+             <div class="container mx-auto px-6">
+                 <div class="text-center mb-16">
+                    <h2 class="section-title text-3xl md:text-4xl font-bold text-slate-100">Our Mission</h2>
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2">
+                        <img src="unnamed.webp" alt="University Physics Lab" class="rounded-xl shadow-2xl">
+                    </div>
+                    <div class="md:w-1/2">
+                         <h3 class="text-2xl font-bold text-slate-100 mb-4">Fostering Intuition Through Interaction</h3>
+                         <p class="text-slate-400 mb-4">
+                            At the University Department of Physics, we believe that the most effective way to learn is by doing. Textbooks and lectures can lay the groundwork, but true understanding and physical intuition are forged through active exploration and experimentation.
+                         </p>
+                         <p class="text-slate-400">
+                            This platform was created to provide students with a virtual laboratory—a space to build, test, and visualize the fundamental principles of physics without the constraints of a physical lab. Our goal is to make learning physics more engaging, accessible, and intuitive for everyone.
+                         </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer id="contact" class="bg-slate-900 border-t border-slate-800">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-bold text-slate-100 mb-4">Physics Hub Juet</h4>
+                    <p class="text-slate-400">Jaypee University Of Engineeing and Technology <br>A-B Road, Raghogarh, Guna, Madhya Pradesh, Pin - 473226, India</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold text-slate-100 mb-4">Quick Links</h4>
+                    <ul>
+                        <li><a href="#home" class="text-slate-400 hover:text-sky-400">Home</a></li>
+                        <li><a href="#simulations" class="text-slate-400 hover:text-sky-400">Simulations</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-sky-400">University Home</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold text-slate-100 mb-4">Contact Us</h4>
+                    <p class="text-slate-400">Email: contact@juet.ac.in</p>
+                    <p class="text-slate-400">Phone: 075442 67310</p>
+                    <p class="text-slate-400"> Developer: Avinash Shukla</p>
+                    <p class="text-slate-400">Phone: 9302924426</p>
+                    <p class="text-slate-400">Email: avinashshukla960@gmail.com</p>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-slate-800 pt-8 text-center text-slate-500">
+                <p>&copy; 2025 Avinash Shukla Inc. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Projectile Motion Simulation Modal -->
+    <div id="simulation-modal" class="modal-overlay hidden">
+        <div class="modal-container p-4 sm:p-6 lg:p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-slate-100">Projectile Motion Simulation</h2>
+                <button id="close-sim-btn" class="text-slate-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Canvas -->
+                <div class="lg:col-span-2">
+                    <canvas id="projectile-canvas"></canvas>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex flex-col space-y-4">
+                    <div class="card-bg p-4 rounded-lg">
+                        <label for="angle" class="block mb-2 text-sm font-medium text-slate-300">Angle: <span id="angle-value" class="font-bold text-sky-400">45°</span></label>
+                        <input type="range" id="angle" min="0" max="90" value="45" class="w-full">
+                    </div>
+                    <div class="card-bg p-4 rounded-lg">
+                        <label for="velocity" class="block mb-2 text-sm font-medium text-slate-300">Initial Velocity: <span id="velocity-value" class="font-bold text-sky-400">50 m/s</span></label>
+                        <input type="range" id="velocity" min="10" max="100" value="50" class="w-full">
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <button id="start-sim-btn" class="w-full text-center py-3 px-4 rounded-lg font-semibold bg-sky-500 text-white hover:bg-sky-600 transition-colors">Fire</button>
+                        <button id="reset-sim-btn" class="w-full text-center py-3 px-4 rounded-lg font-semibold bg-slate-700 text-slate-200 hover:bg-slate-600 transition-colors">Reset</button>
+                    </div>
+
+                    <div class="card-bg p-4 rounded-lg space-y-2 text-sm">
+                         <div class="flex justify-between"><span>Max Height:</span> <span id="max-height-val" class="font-mono text-sky-400">0.00 m</span></div>
+                         <div class="flex justify-between"><span>Range:</span> <span id="range-val" class="font-mono text-sky-400">0.00 m</span></div>
+                         <div class="flex justify-between"><span>Time of Flight:</span> <span id="time-val" class="font-mono text-sky-400">0.00 s</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- Script for Menu and Header ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // --- Projectile Motion Simulation Script ---
+        
+        // Modal controls
+        const simModal = document.getElementById('simulation-modal');
+        const launchBtn = document.getElementById('launch-projectile-sim');
+        const closeBtn = document.getElementById('close-sim-btn');
+
+        launchBtn.addEventListener('click', () => {
+            simModal.classList.remove('hidden');
+            // Recalculate canvas size when modal opens, in case window was resized
+            setupCanvas();
+        });
+        closeBtn.addEventListener('click', () => simModal.classList.add('hidden'));
+        
+        // Simulation controls
+        const angleSlider = document.getElementById('angle');
+        const velocitySlider = document.getElementById('velocity');
+        const angleValue = document.getElementById('angle-value');
+        const velocityValue = document.getElementById('velocity-value');
+        const startBtn = document.getElementById('start-sim-btn');
+        const resetBtn = document.getElementById('reset-sim-btn');
+
+        const maxHeightVal = document.getElementById('max-height-val');
+        const rangeVal = document.getElementById('range-val');
+        const timeVal = document.getElementById('time-val');
+
+        const canvas = document.getElementById('projectile-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let angle = 45;
+        let velocity = 50;
+        const g = 9.81;
+        let isSimulating = false;
+        let animationFrameId;
+        let path = [];
+        let startTime;
+        let scale = 1;
+
+        function updateSliderValues() {
+            angle = parseFloat(angleSlider.value);
+            velocity = parseFloat(velocitySlider.value);
+            angleValue.textContent = `${angle.toFixed(0)}°`;
+            velocityValue.textContent = `${velocity.toFixed(0)} m/s`;
+        }
+
+        function setupCanvas() {
+            const container = canvas.parentElement;
+            const containerWidth = container.getBoundingClientRect().width;
+            if (containerWidth === 0) return;
+            canvas.width = containerWidth;
+            canvas.height = containerWidth / 1.5;
+            resetSimulation();
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = '#1e293b'; // Slate 800
+            ctx.lineWidth = 1;
+
+            const maxRange = (velocity * velocity * Math.sin(2 * (angle * Math.PI / 180))) / g;
+            const maxHeight = (velocity * velocity * Math.pow(Math.sin(angle * Math.PI / 180), 2)) / (2 * g);
+            
+            const calculatedScaleX = (maxRange > 0) ? canvas.width / (maxRange * 1.2) : 1;
+            const calculatedScaleY = (maxHeight > 0) ? canvas.height / (maxHeight * 1.2) : 1;
+            scale = Math.min(calculatedScaleX, calculatedScaleY);
+            if (!isFinite(scale) || scale < 0.01) scale = 1;
+
+            const maxDim = Math.max(canvas.width / scale, canvas.height / scale);
+            const gridSpacingMeters = Math.pow(10, Math.floor(Math.log10(maxDim / 5) || 0));
+            const gridSpacingPixels = gridSpacingMeters * scale;
+
+            if (gridSpacingPixels > 5) {
+                for (let x = 0; x < canvas.width; x += gridSpacingPixels) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < canvas.height; y += gridSpacingPixels) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, canvas.height - y);
+                    ctx.lineTo(canvas.width, canvas.height - y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawPath() {
+            ctx.beginPath();
+            ctx.strokeStyle = '#38bdf8'; // Sky 400
+            ctx.lineWidth = 2;
+            path.forEach((p, i) => {
+                const canvasX = p.x * scale;
+                const canvasY = canvas.height - (p.y * scale);
+                if (i === 0) ctx.moveTo(canvasX, canvasY);
+                else ctx.lineTo(canvasX, canvasY);
+            });
+            ctx.stroke();
+        }
+        
+        function drawProjectile(x, y) {
+            const canvasX = x * scale;
+            const canvasY = canvas.height - (y * scale);
+            ctx.beginPath();
+            ctx.arc(canvasX, canvasY, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#f8fafc'; // Slate 50
+            ctx.fill();
+        }
+
+        function resetSimulation() {
+            isSimulating = false;
+            cancelAnimationFrame(animationFrameId);
+            path = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+            maxHeightVal.textContent = '0.00 m';
+            rangeVal.textContent = '0.00 m';
+            timeVal.textContent = '0.00 s';
+        }
+
+        function startSimulation() {
+            if (isSimulating) return;
+            resetSimulation();
+            isSimulating = true;
+            startTime = performance.now();
+            
+            const angleRad = angle * Math.PI / 180;
+            const vx = velocity * Math.cos(angleRad);
+            const vy = velocity * Math.sin(angleRad);
+            
+            let currentMaxHeight = 0;
+
+            function animate(currentTime) {
+                if (!isSimulating) return;
+
+                const t = (currentTime - startTime) / 1000;
+                const x = vx * t;
+                const y = (vy * t) - (0.5 * g * t * t);
+                
+                if (y > currentMaxHeight) currentMaxHeight = y;
+
+                if (y < 0) {
+                    isSimulating = false;
+                    const totalTime = (2 * vy) / g;
+                    const range = vx * totalTime;
+                    
+                    maxHeightVal.textContent = `${currentMaxHeight.toFixed(2)} m`;
+                    rangeVal.textContent = `${range.toFixed(2)} m`;
+                    timeVal.textContent = `${totalTime.toFixed(2)} s`;
+                    
+                    path.push({x: range, y: 0});
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawGrid();
+                    drawPath();
+                    drawProjectile(range, 0);
+
+                    return;
+                }
+
+                path.push({x, y});
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawGrid();
+                drawPath();
+                drawProjectile(x, y);
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        angleSlider.addEventListener('input', updateSliderValues);
+        velocitySlider.addEventListener('input', updateSliderValues);
+        startBtn.addEventListener('click', startSimulation);
+        resetBtn.addEventListener('click', setupCanvas);
+        window.addEventListener('resize', setupCanvas);
+
+        // Initial setup
+        updateSliderValues();
+        setupCanvas();
+
+    </script>
+
+</body>
+</html>
+
