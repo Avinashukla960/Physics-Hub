@@ -1,2 +1,4 @@
 # Physics-Hub
-Different Simulation of Physics
+A fully functional Physics simulation website 
+link--  
+https://avinashukla960.github.io/Physics-Hub/
