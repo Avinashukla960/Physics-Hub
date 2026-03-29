@@ -38,5 +38,17 @@ Physics-Hub/
 📌 Notes download option
 🌐 More advanced physics topics
 🤝 Contribution
+
+
+Contributions are welcome!
+If you’d like to improve this project:
+
+Fork the repository
+Create a new branch
+Make your changes
+Submit a pull request
+📄 License
+
+This project is open-source and available under the MIT License.
   
 
