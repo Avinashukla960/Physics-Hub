@@ -50,5 +50,16 @@ Submit a pull request
 📄 License
 
 This project is open-source and available under the MIT License.
+
+
+  👨‍💻 Author
+
+Avinash Shukla
+
+BTech CSE (AI/ML)
+Passionate about Python & Full Stack Development
+⭐ Support
+
+If you like this project, don’t forget to star the repository ⭐
   
 
