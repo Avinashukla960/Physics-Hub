@@ -17,5 +17,26 @@ Frontend: HTML, CSS, JavaScript
 Deployment: GitHub Pages
 Version Control: Git & GitHub
 🎯 Purpose of the Project
+
+This project is built to:
+
+Help students learn physics in a simple way
+Practice frontend web development
+Organize educational content effectively
+Improve UI/UX design skills
+📂 Project Structure
+Physics-Hub/
+│── index.html
+│── style.css
+│── script.js
+│── assets/
+│── topics/
+🌱 Future Improvements
+🔍 Search functionality for topics
+🎥 Add animations and simulations
+📊 Interactive quizzes
+📌 Notes download option
+🌐 More advanced physics topics
+🤝 Contribution
   
 
