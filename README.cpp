@@ -5,6 +5,7 @@ Physics Hub is a simple, interactive, and student-friendly web platform designed
 
 🔗 Live Demo: Visit Physics Hub - https://avinashukla960.github.io/Physics-Hub/
 
+
 🚀 Features
 📚 Well-structured physics topics
 🧠 Easy-to-understand concept explanations
